@@ -12,7 +12,9 @@ import {
   View
 } from 'react-native';
 
-import ListView from './components/ListView'
+import ListView from './components/ListView';
+import DetailView from './components/DetailView';
+
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -24,8 +26,8 @@ const instructions = Platform.select({
 export default class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <ListView />
+      <View>
+        <DetailView />
       </View>
     );
   }
