@@ -1,65 +1,97 @@
 import React, { Component } from 'react';
 import { List, ListItem, SearchBar } from 'react-native-elements';
 
-import OfflineData from '../../data/Data.js';
-import getAllBlogs from '../services/Api';
-
+import OfflineData from '../services/Data';
+import GetBlogsService from '../services/GetBlogs';
 
 export default class ListView extends Component {
     state = {
-        blogs: OfflineData
+        blogs: [],
+        searchKey: ''
+    }
+
+    onPress(item) {
+        const { navigate } = this.props.navigation;
+        navigate('BlogDetails', { blog: item })
+    }
+
+    getBlogData() {
+        if (this.state.searchKey) {
+            return this.state.blogs.filter(blog => blog.title.includes(this.state.searchKey))
+        } else {
+            return this.state.blogs
+        }
     }
     getBlogs() {
-        getAllBlogs
+        GetBlogsService.getBlogs()
             .then(res => {
-                console.log(res);
-                //Not working
                 this.setState({
-                    blogs: OfflineData
+                    blogs: res
                 })
             })
             .then(res => {
                 this.setState({
-                    blogs: OfflineData
+                    blogs:OfflineData
                 })
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.log('There has been a problem with your fetch operation: ' + error.message);
-                 // ADD THIS THROW error
-                  throw error;
-                });
+                this.setState({
+                    blogs:OfflineData
+                })
+            });
     }
+
     componentWillMount() {
         this.getBlogs();
     }
+
     searchBlogs(text) {
         this.setState(
             {
-                // Not working
-                blogs: this.state.blogs.find(blog => blog.title == text)
+                searchKey: text
+
             }
         )
     }
+
     render() {
         return (
-            <List>
-            <SearchBar
-                onChangeText={search => this.searchBlogs(search)}
-                onClearText={search => this.getBlogs()}
-                placeholder='Type Here...' />
+            <List
+                containerStyle={{
+                    flex: 2,
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                }}
+            >
+                <SearchBar
+                    lightTheme
+                    round
+                    onChangeText={search => this.searchBlogs(search)}
+                    onClearText={search => this.getBlogs()}
+                    placeholder='Search'
+                    icon={{ type: 'font-awesome', name: 'search' }}
+                    containerStyle={{
+                        marginTop: 0,
+                        marginBottom: 16,
+                        backgroundColor: 'transparent'
+                    }}
+                />
                 {
-                    this.state.blogs.map((l, i) => (
+                    this.getBlogData().map((l, i) => (
                         <ListItem
                             containerStyle={{
                                 borderBottomWidth: 0,
-                                marginTop: 10,
-                                marginBottom: 2,
+                                marginTop: 0,
+                                marginBottom: 16,
                                 marginLeft: 8,
                                 marginRight: 8,
                                 backgroundColor: 'white'
                             }}
                             key={i}
                             title={l.title}
+                            onPress={() => { this.onPress(l) }}
                         />))
                 }
             </List>

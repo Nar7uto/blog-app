@@ -12,23 +12,12 @@ import {
   View
 } from 'react-native';
 
-import ListView from './components/ListView';
-import DetailView from './components/DetailView';
-
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import BaseNavigator from './Navigator';
 
 export default class App extends Component {
   render() {
     return (
-      <View>
-        <DetailView />
-      </View>
+        <BaseNavigator />
     );
   }
 }
